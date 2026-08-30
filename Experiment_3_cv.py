@@ -1,0 +1,278 @@
+# Name :- Abhay Singh Tomar
+# BTech Cse, 3rd year
+# sec:"B"
+# Cu24250144
+# ROll no. = *1*
+
+# Experiment No. 3
+
+# Experiment Name
+
+# Implementation and Analysis of Spatial Filtering Techniques using Low-Pass and High-Pass Filters
+# order to identify relationships between variables, validate assumptions, and support data-driven decision-making.
+# To implement and analyze spatial domain filtering techniques using low-pass and high-pass filters for image smoothing, using Python and OpenCV.
+
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+from google.colab import files
+
+uploaded = files.upload()
+
+filename = list(uploaded.keys())[0]
+
+image = cv2.imread(filename)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+print("Image loaded successfully!")
+print("Image shape:", gray.shape)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(gray, cmap='gray')
+plt.title("Original Grayscale Image")
+plt.axis("off")
+plt.show()
+
+noisy_image = gray.copy()
+
+# Salt noise
+salt = np.random.random(gray.shape) < 0.02
+noisy_image[salt] = 255
+
+# Pepper noise
+pepper = np.random.random(gray.shape) < 0.02
+noisy_image[pepper] = 0
+
+plt.figure(figsize=(8, 6))
+plt.imshow(noisy_image, cmap='gray')
+plt.title("Image with Salt-and-Pepper Noise")
+plt.axis("off")
+plt.show()
+
+gaussian = cv2.GaussianBlur(noisy_image, (5, 5), 0)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(gaussian, cmap='gray')
+plt.title("Gaussian Filter")
+plt.axis("off")
+plt.show()
+
+median = cv2.medianBlur(noisy_image, 5)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(median, cmap='gray')
+plt.title("Median Filter")
+plt.axis("off")
+plt.show()
+
+average = cv2.blur(noisy_image, (5, 5))
+
+plt.figure(figsize=(8, 6))
+plt.imshow(average, cmap='gray')
+plt.title("Average (Mean) Filter")
+plt.axis("off")
+plt.show()
+
+plt.figure(figsize=(15, 4))
+
+plt.subplot(1, 4, 1)
+plt.imshow(noisy_image, cmap='gray')
+plt.title("Noisy Image")
+plt.axis("off")
+
+plt.subplot(1, 4, 2)
+plt.imshow(average, cmap='gray')
+plt.title("Average Filter")
+plt.axis("off")
+
+plt.subplot(1, 4, 3)
+plt.imshow(gaussian, cmap='gray')
+plt.title("Gaussian Filter")
+plt.axis("off")
+
+plt.subplot(1, 4, 4)
+plt.imshow(median, cmap='gray')
+plt.title("Median Filter")
+plt.axis("off")
+
+plt.tight_layout()
+plt.show()
+
+laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+laplacian = cv2.convertScaleAbs(laplacian)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(laplacian, cmap='gray')
+plt.title("Laplacian Filter")
+plt.axis("off")
+plt.show()
+
+sobel_x = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+sobel_x = cv2.convertScaleAbs(sobel_x)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(sobel_x, cmap='gray')
+plt.title("Sobel X - Horizontal Edges")
+plt.axis("off")
+plt.show()
+
+sobel_y = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+sobel_y = cv2.convertScaleAbs(sobel_y)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(sobel_y, cmap='gray')
+plt.title("Sobel Y - Vertical Edges")
+plt.axis("off")
+plt.show()
+
+sobel_combined = cv2.magnitude(
+    cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3),
+    cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+)
+
+sobel_combined = cv2.convertScaleAbs(sobel_combined)
+
+plt.figure(figsize=(8, 6))
+plt.imshow(sobel_combined, cmap='gray')
+plt.title("Combined Sobel Edge Detection")
+plt.axis("off")
+plt.show()
+
+plt.figure(figsize=(15, 4))
+
+plt.subplot(1, 3, 1)
+plt.imshow(laplacian, cmap='gray')
+plt.title("Laplacian")
+plt.axis("off")
+
+plt.subplot(1, 3, 2)
+plt.imshow(sobel_x, cmap='gray')
+plt.title("Sobel X")
+plt.axis("off")
+
+plt.subplot(1, 3, 3)
+plt.imshow(sobel_y, cmap='gray')
+plt.title("Sobel Y")
+plt.axis("off")
+
+plt.tight_layout()
+plt.show()
+
+plt.figure(figsize=(16, 10))
+
+images = [
+    (gray, "Original"),
+    (noisy_image, "Noisy"),
+    (average, "Average Filter"),
+    (gaussian, "Gaussian Filter"),
+    (median, "Median Filter"),
+    (laplacian, "Laplacian"),
+    (sobel_x, "Sobel X"),
+    (sobel_y, "Sobel Y")
+]
+
+for i, (img, title) in enumerate(images):
+    plt.subplot(2, 4, i + 1)
+    plt.imshow(img, cmap='gray')
+    plt.title(title)
+    plt.axis("off")
+
+plt.tight_layout()
+plt.show()
+
+# EXPERIMENT 3 - ANSWERS TO QUESTIONS
+
+# Q1. What is spatial filtering?
+
+# Spatial filtering is an image processing technique in which the value of a pixel is modified using its neighboring pixels. It is used for image smoothing, noise removal, sharpening, and edge detection
+
+# Q2. Difference between Low-Pass and High-Pass Filters
+
+# *   Low-pass filter: Reduces high-frequency components and produces a smoother image.
+# *   High-pass filter: Enhances high-frequency components such as edges and fine details.
+
+# Examples: Gaussian and Average → Low-pass; Sobel and Laplacian → High-pass.
+
+# Q3. Compare Average, Gaussian and Median Filters.
+
+# * Average: Uses the mean of neighboring pixels; useful for basic smoothing.
+
+# *   Gaussian: Uses Gaussian-weighted neighboring pixels; provides smoother and more natural results.
+# *   Median: Uses the median value of neighboring pixels; particularly effective for salt-and-pepper noise.
+
+# Q4. Why is Median Filter effective for salt-and-pepper noise?
+
+# Salt-and-pepper noise consists of random bright and dark pixels appearing in an image. The Median Filter replaces each pixel with the median value of its neighborhood. Since the median is less affected by extreme values than the average, noisy pixels are effectively removed. At the same time, edges are generally preserved better than with an Average Filter. Therefore, Median Filtering is particularly effective for removing salt-and-pepper noise.
+
+# Q5. What is the role of convolution kernels?
+
+# A convolution kernel is a small matrix that moves across an image and calculates new pixel values using neighboring pixels. Different kernels perform different operations such as smoothing, sharpening, and edge detection.
+
+# Examples:
+
+# Gaussian Kernel -> Smoothing Average Kernel -> Blurring Sobel Kernel -> Edge Detection Laplacian Kernel -> Edge Enhancement
+
+# QUESTION 6: What is the purpose of the Sobel and Laplacian operators in edge detection?
+
+# Sobel Operator:
+
+# The Sobel operator calculates image intensity gradients. Sobel X detects changes primarily in the horizontal direction and therefore highlights vertical edges. Sobel Y detects changes primarily in the vertical direction and therefore highlights horizontal edges.
+
+# Laplacian Operator:
+
+# The Laplacian operator is a second-order derivative operator. It detects regions where image intensity changes rapidly. It can enhance edges and fine details in an image.
+
+# Therefore:
+   
+# Sobel -> Gradient-based edge detection. Laplacian -> Second-order edge enhancement.
+
+# QUESTION 7: Why are filtering operations considered an essential preprocessing step in computer vision?
+
+# Filtering removes unwanted noise and improves image quality before further processing such as segmentation, feature extraction, and object recognition.
+
+# Filtering can Remove unwanted noise. Smooth image variations. Enhance important edges. Improve feature visibility. Reduce unwanted image details. Improve the input provided to computer vision algorithms. Better image quality can help subsequent tasks such as object detection, segmentation, recognition and feature extraction.
+
+# QUESTION 8: Discuss the trade-off between image smoothing and edge preservation during filtering.
+
+# More smoothing can reduce noise but may also remove important edges and details. Less smoothing preserves edges but may leave more noise. Therefore, an appropriate filter must be selected according to the application.
+
+# However, excessive smoothing can also remove important edges and fine image details.
+
+# Strong filtering: -> More noise reduction -> More loss of edges and details
+
+# Weak filtering: -> Better edge preservation -> More noise may remain
+
+# Therefore, an appropriate filter and kernel size must be selected according to the application. Median and Gaussian Filters can provide a useful balance between noise reduction and preservation of important structures.
+
+# QUESTION 9: Mention four real-world applications where spatial filtering techniques are widely used.
+
+# Four real-world applications are:
+
+# Medical Imaging: Filtering is used to reduce noise and improve the quality of medical images such as X-rays, CT scans and MRI images. Surveillance Systems: Filtering can improve image quality and enhance important features in surveillance footage. Remote Sensing: Spatial filters can be used to enhance satellite and aerial images. Autonomous Systems: Filtering can improve camera images before object detection, recognition and other computer vision operations. These applications demonstrate the importance of spatial filtering in practical computer vision systems.
+
+# 1.  Medical image processing
+# 2.   Surveillance systems
+# 3. Remote sensing
+# 4. Autonomous vehicles
+
+# QUESTION 10: Compare spatial domain filtering with frequency domain filtering in terms of implementation and practical applications.
+
+# Spatial Domain Filtering:
+
+# Spatial filtering operates directly on image pixels. It generally uses convolution kernels or neighborhood operations.
+
+# Examples:
+
+# Gaussian Filter Median Filter Average Filter Sobel Filter Laplacian Filter
+
+# It is commonly used for:
+# Smoothing Noise removal Edge detection Sharpening Frequency Domain Filtering: Frequency domain filtering first converts an image from the spatial domain into the frequency domain using Fourier Transform. The frequency components are then modified using filters.
+
+# Noise removal Image restoration Frequency-based enhancement Selective manipulation of image frequencies Main Difference: Spatial Domain: Directly modifies pixel values using local neighborhoods. Frequency Domain: Modifies frequency components after Fourier Transform. Spatial filtering is generally simpler for local image operations, while frequency domain filtering is useful when selective control over frequency components is required.
+
+
+
+# *  Spatial domain: Directly modifies pixel values using neighboring pixels and kernels.
+# *   Frequency domain: Converts the image into frequency components and performs filtering on those components.
